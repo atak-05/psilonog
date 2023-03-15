@@ -1,0 +1,6 @@
+gTTS
+speechRecognition
+selenium
+nltk
+playsound
+pyaudio

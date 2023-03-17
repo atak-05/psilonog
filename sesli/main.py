@@ -11,7 +11,6 @@ hAU_answer_neut=["bilmiyorum", "idare eder" ]
 
 while True:
     text = m.save_voice().lower()
-
     if any(word in text for word in greetings):
         for item in greetings:
             m.speak(item)

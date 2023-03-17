@@ -3,13 +3,27 @@ from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk.corpus import wordnet
 from nltk.stem import WordNetLemmatizer
 from nltk.sentiment import SentimentIntensityAnalyzer
+from gtts import gTTS
+import speech_recognition as sr
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+import random
+from selenium.webdriver.common.by import By
+from selenium.webdriver import Keys
+from nltk.chat.util import Chat, reflections
+from playsound import playsound
+import googletrans
+from googletrans import *
+
 
 nltk.download('averaged_perceptron_tagger')
 nltk.download('vader_lexicon')
 
 def kelime_lemmatize_et(kelime):
     lemmatizer = WordNetLemmatizer()
+    print(lemmatizer)
     lemma = lemmatizer.lemmatize(kelime, get_wordnet_pos(kelime))
+    print("lemma"+ lemma)
     return lemma
 
 def get_wordnet_pos(kelime):
@@ -19,6 +33,12 @@ def get_wordnet_pos(kelime):
                 "V": wordnet.VERB,
                 "R": wordnet.ADV}
     return tag_dict.get(tag, wordnet.NOUN)
+
+def translator(text):
+    translator = Translator()
+    translation = translator.translate(text , src='tr' ,dest='en')
+    return text
+
 
 def bot_cevap(mesaj):
     sorular = [
@@ -56,33 +76,10 @@ def bot_cevap(mesaj):
         "Hayatın amacı insanlara yardım etmek ve dünyayı daha iyi bir yer haline getirmek. Senin için hayatta en büyük hayal nedir?",
         "Bir gün dünya barışını sağlamak benim en büyük hayalim. Peki ya senin hayatta en büyük hayalin nedir?"
     ]
-    # sid = SentimentIntensityAnalyzer()
-
-    # duygu = sid.polarity_scores(mesaj)['compound']
-
-    # if duygu > 0.5:
-    #     cevap = "Sevindim, senin için iyi bir gün olmuş demektir."
-    # elif duygu < -0.5:
-    #     cevap = "Üzgünüm, umarım daha iyi bir gün geçirirsin."
-    # else:
-    #     cevap = ""
-
-    # kelimeler = word_tokenize(mesaj)
-    # kelimeler = [kelime_lemmatize_et(kelime) for kelime in kelimeler]
-
-    # for soru in sorular:
-    #     if soru in mesaj:
-    #         cevap += cevaplar[sorular.index(soru)]
-    #         break
-
-    # if not cevap:
-    #     cevap = "Anlamadım, başka bir şeyler söyleyebilir misin?"
-
-    # return cevap
     sid = SentimentIntensityAnalyzer()
 
     mesaj_duygusu = sid.polarity_scores(mesaj)
-
+    print(mesaj_duygusu)
     if mesaj_duygusu['compound'] >= 0.05:
         cevap = cevaplar[0]
     elif mesaj_duygusu['compound'] <= -0.05:
@@ -92,18 +89,75 @@ def bot_cevap(mesaj):
 
     kelimeler = word_tokenize(mesaj)
     kelimeler = [kelime.lower() for kelime in kelimeler]
-
+    print(kelimeler)
     yeni_kelimeler = []
     for kelime in kelimeler:
         if kelime.isalnum():
             yeni_kelimeler.append(kelime_lemmatize_et(kelime))
+    print(yeni_kelimeler)
 
     if any(kelime in yeni_kelimeler for kelime in ['mutlu', 'sevinçli', 'keyifli', 'güzel']):
         cevap = cevaplar[0]
-    elif any(kelime in yeni_kelimeler for kelime in ['üzgün', 'kötü', 'moralli']):
+    elif any(kelime in yeni_kelimeler for kelime in ['üzgün', 'kötüyüm', 'moralli']):
         cevap = cevaplar[1]
 
-    return cevap
+    return speak(cevap)
+
+
+
+
+import os
+def speak(string):
+    tts= gTTS(text=string, lang="tr")
+    file1 = "./voice/answer"+str(random.randint(0,10000000000000000000000))+ ".mp3"
+    tts.save(file1)
+    playsound(sound = file1)
+    
+
+       
+def save_voice():
+    r = sr.Recognizer()
+    
+    with sr.Microphone() as source:
+        voice = r.listen(source)
+        
+        talk_voice = " "
+        try :
+            talk_voice = r.recognize_google(voice, language="Tr-tr")
+            print(talk_voice)
+        except Exception as e:
+            speak("Anlamadım")
+    return talk_voice
+
+
+
+
+
+greetings = ["selam", "merhaba", "hey"]
+bye = ["bay bay","sonra görüşürüz","kapat"]
+
+
+while True:
+    text = save_voice().lower()
+    
+    if any(word in text for word in greetings):
+        for item in greetings:
+            speak(item)
+            break
+
+    if any(word in text for word in bye):
+        for item in bye:
+            speak(item)
+            break
+        break        
+    else:
+        bot_cevap(text)
+# chat = Chat(ciftler, reflections)
+# chat.converse(quit="bitti")
+
+# with open('./data/data_set.txt', 'r') as file:
+#     text = file.read()
+
 
 
 

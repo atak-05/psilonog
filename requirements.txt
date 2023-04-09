@@ -4,3 +4,4 @@ selenium
 nltk
 playsound
 pyaudio
+googletrans

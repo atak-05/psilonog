@@ -51,6 +51,7 @@ def save_voice():
             print(talk_voice)
         except Exception as e:
             speak("Anlamadım")
+            save_voice()
     return talk_voice
 
 #Tokenize ==============================================================================================================

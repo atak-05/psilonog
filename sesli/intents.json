@@ -1,0 +1,21 @@
+{
+    "intents":[
+        {
+            "tag" : "greetings",
+            "patterns":["selam", "nasıl gidiyor", "iyi günler","nasılsın","merhaba","napıyosun","napıyorsun"],
+            "responses":["Teşekkürler iyiyim", "Herşey yolunda","Oldukça iyiyim","Fena sayılmam"]
+
+        },
+        {
+            "tag" :"goodbye",
+            "patterns" : ["bay bay","bye bye", "görüşürüz","hadi bay","kapan","kapat","kendine iyi bak"],
+            "responses" :["kendine  iyi bak"]
+        },
+        {
+            "tag" :"name",
+            "patterns" : ["kimsin","kimsinsen","adın ne","nesin sen", "nesin","robot musun","yapay zeka mısın", "psikolog musun", "adın nedir"],
+            "responses" :["Ben Gizem Çırıkka tarafından 2023 yılında hazırlanmış bir psikolog chatbotuyum. Amacım kullanıcıların genel psikolojik analizi yapmaktır."]
+        }
+         
+    ]
+}
